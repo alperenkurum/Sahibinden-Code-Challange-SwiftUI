@@ -31,6 +31,9 @@ struct FavouritesView: View {
             }
             .background(Color.gray.opacity(0.15))
             .navigationTitle("Favourites")
+            .navigationDestination(item: $repositoriesViewModel.selectedRepository) { repo in
+                DetailRepoView(repository: repo)
+            }
         }
     }
     
@@ -51,7 +54,7 @@ struct FavouritesView: View {
         )
         .contentShape(RoundedRectangle(cornerRadius: 12))
         .onTapGesture {
-            repositoriesViewModel.didTappedCell(id: repo.id)
+            repositoriesViewModel.didTappedCellFavourites(id: repo.id)
         }
         .onAppear {
             let lastId = repositoriesViewModel.searchText.isEmpty ? repositoriesViewModel.repositories.last?.id : repositoriesViewModel.filteredRepositories.last?.id

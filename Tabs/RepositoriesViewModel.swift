@@ -37,6 +37,11 @@ final class RepositoriesViewModel: ObservableObject {
             fetchNextRepositories()
         }
     }
+    
+    func didTappedCellFavourites (id: Int) {
+        selectedRepository = storageCoreData.fetchFavourites().first(where: { $0.id == id })
+        setIsVisitedCoreData(repo: selectedRepository!)
+    }
 
     func didTappedCell(id: Int) {
         if let index = searchText.isEmpty ? repositories.firstIndex(where: { $0.id == id }) : filteredRepositories.firstIndex(where: { $0.id == id }) {
@@ -45,12 +50,16 @@ final class RepositoriesViewModel: ObservableObject {
             } else {
                 filteredRepositories[index].isVisited = true
             }
-            if storageCoreData.isExist(repoId: String(id)) {
-                storageCoreData.setIsVisited(repoId: String(id))
-            } else {
-                storageCoreData.saveRepository(repository: repositories[index])
-            }
+            setIsVisitedCoreData(repo: repositories[index])
             selectedRepository = repositories[index]
+        }
+    }
+    
+    private func setIsVisitedCoreData(repo: Repository) {
+        if storageCoreData.isExist(repoId: String(repo.id)) {
+            storageCoreData.setIsVisited(repoId: String(repo.id))
+        } else {
+            storageCoreData.saveRepository(repository: repo)
         }
     }
     
